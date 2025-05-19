@@ -1,30 +1,67 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <button @click="listVisible = !listVisible">
+      {{ listVisible === true ? "Скрыть" : "Показать" }} список
+    </button>
+    <ul v-if="listVisible">
+      <li v-for="user in users" :key="user.id">
+        <b>{{ user.name }}</b>
+        <span
+          class="show_btn"
+          :class="{ colored: user.colored }"
+          @click="user.ageVisible = !user.ageVisible"
+          @mouseover="user.colored = true"
+          @mouseleave="user.colored = false"
+        >
+          {{ user.ageVisible === true ? "Скрыть" : "Показать..." }}
+        </span>
+        <span v-show="user.ageVisible"> age = {{ user.age }}</span>
+      </li>
+    </ul>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
+<script setup>
+import { ref } from "vue";
+
+const listVisible = ref(false);
+
+const users = ref([
+  {
+    id: 1,
+    name: "John",
+    age: 20,
+    ageVisible: false,
+    colored: false,
+  },
+  {
+    id: 2,
+    name: "Kate",
+    age: 25,
+    ageVisible: false,
+    colored: false,
+  },
+  {
+    id: 3,
+    name: "Joe",
+    age: 40,
+    ageVisible: false,
+    colored: false,
+  },
+]);
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+ul li {
+  transition: 0.3s;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+ul li span {
+  margin-left: 20px;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.show_btn {
+  cursor: pointer;
+}
+.colored {
+  color: orange;
 }
 </style>
