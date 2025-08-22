@@ -18,7 +18,7 @@ function resetHandler(e) {
 </script>
 
 <template>
-  <h2 class="mb-4">Поиск:</h2>
+  <h2 class="mb-4">Поиск товаров:</h2>
   <form
     class="w-100 me-3 d-flex align-items-center gap-2"
     @submit="submitHandler"

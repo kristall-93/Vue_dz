@@ -32,7 +32,7 @@ const searchText = ref("");
               :key="index"
               class="search-results-item"
             >
-              <a class="py-2 d-block" href="">{{ result.title }}</a>
+              <router-link class="py-2 d-block" :to="{ name: 'product', params: { productId: result.id } }">{{ result.title }}</router-link>
             </div>
             <div v-if="!results.length" class="search-results-item">
               Нет результатов

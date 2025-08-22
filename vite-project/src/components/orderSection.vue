@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { Form, Field, ErrorMessage, useForm } from "vee-validate";
 
 const statusMessage = ref("");
@@ -127,34 +127,34 @@ const onSubmit = async (values) => {
     showPopup.value = false;
   }, 3000);
 };
+
+const cart = ref(JSON.parse(localStorage.getItem("cart")));
+
+const summaryCart = computed(() => {
+  let summary = 0;
+  cart.value.forEach((item) => (summary += item.price * item.count));
+  return Math.round(summary * 100) / 100;
+});
 </script>
 
 <template>
   <div class="container">
-    <div class="py-5 text-center">
-      <h2 class="h2">Оформление заказа</h2>
-    </div>
     <div class="row g-5">
-      <div class="col-md-5 col-lg-4 order-md-last">
+      <div class="col-md-5 col-lg-4 order-md-last" v-if="cart && cart.length > 0">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
           <span class="text-primary">Ваша корзина</span>
-          <span class="badge bg-primary rounded-pill">2</span>
+          <span class="badge bg-primary rounded-pill">{{ cart.length }}</span>
         </h4>
         <ul class="list-group mb-3">
-          <li class="list-group-item d-flex justify-content-between lh-sm">
+          <li v-for="item in cart"
+                      :key="item.id" class="list-group-item d-flex justify-content-between lh-sm">
             <div>
-              <h6 class="my-0">Товар 1</h6>
+              <h6 class="my-0">{{ item.title }}</h6>
             </div>
-            <span class="text-body-secondary">$12</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Товар 2</h6>
-            </div>
-            <span class="text-body-secondary">$8</span>
+            <span class="text-body-secondary w-50 text-end">{{ item.count }} x {{ item.price }}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
-            <span>Сумма (USD)</span> <strong>$20</strong>
+            <span>Сумма (USD)</span> <strong>{{ summaryCart }}</strong>
           </li>
         </ul>
       </div>
