@@ -22,6 +22,38 @@ const summaryCart = computed(() => {
   cart.value.forEach((item) => (summary += item.price * item.count));
   return Math.round(summary * 100) / 100;
 });
+
+// Функции для управления количеством товара
+function increaseQuantity(itemId) {
+  const item = cart.value.find(item => item.id === itemId);
+  if (item) {
+    item.count += 1;
+    updateCartInStorage();
+  }
+}
+
+function decreaseQuantity(itemId) {
+  const item = cart.value.find(item => item.id === itemId);
+  if (item && item.count > 1) {
+    item.count -= 1;
+    updateCartInStorage();
+  }
+}
+
+function updateQuantity(itemId, newQuantity) {
+  const item = cart.value.find(item => item.id === itemId);
+  if (item) {
+    const quantity = parseInt(newQuantity);
+    if (quantity >= 1) {
+      item.count = quantity;
+      updateCartInStorage();
+    }
+  }
+}
+
+function updateCartInStorage() {
+  localStorage.setItem("cart", JSON.stringify(cart.value));
+}
 </script>
 
 <template>
@@ -61,6 +93,7 @@ const summaryCart = computed(() => {
                       v-for="item in cart"
                       :key="item.id"
                       class="row cart-item mb-3 py-3"
+                      data-testid="item"
                     >
                       <div class="col-md-2">
                         <img
@@ -69,7 +102,7 @@ const summaryCart = computed(() => {
                           class="img-fluid"
                         />
                       </div>
-                      <div class="col-md-5">
+                      <div class="col-md-4">
                         <router-link class="link"
                           :to="{
                             name: 'product',
@@ -79,8 +112,35 @@ const summaryCart = computed(() => {
                           <h5 class="card-title">{{ item.title }}</h5>
                         </router-link>
                       </div>
-                      <div class="col-md-1 text-end">
-                        <p class="fw-bold">{{ item.count }}</p>
+                      <div class="col-md-2">
+                        <div class="input-group">
+                          <button 
+                            class="btn btn-outline-secondary btn-sm" 
+                            type="button"
+                            @click="decreaseQuantity(item.id)"
+                            :disabled="item.count <= 1"
+                            data-testid="minus"
+                          >
+                            -
+                          </button>
+                          <input 
+                            style="max-width:100px" 
+                            type="number" 
+                            class="form-control form-control-sm text-center quantity-input" 
+                            :value="item.count"
+                            @input="updateQuantity(item.id, $event.target.value)"
+                            min="1"
+                            data-testid="count"
+                          >
+                          <button 
+                            class="btn btn-outline-secondary btn-sm" 
+                            type="button"
+                            @click="increaseQuantity(item.id)"
+                            data-testid="plus"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                       <div class="col-md-2 text-end">
                         <p class="fw-bold">${{ item.price }}</p>
@@ -109,7 +169,7 @@ const summaryCart = computed(() => {
                   <div class="card-body">
                     <div class="d-flex justify-content-between mb-4">
                       <strong>Сумма заказа</strong>
-                      <strong>${{ summaryCart }}</strong>
+                      <strong data-testid="summary">${{ summaryCart }}</strong>
                     </div>
                     <router-link class="btn btn-primary w-100" to="/order">
                       Оформить заказ
@@ -140,4 +200,14 @@ const summaryCart = computed(() => {
 }
 .link {
 color: inherit;}
+
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantity-input[type=number] {
+  -moz-appearance: textfield;
+}
 </style>

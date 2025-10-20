@@ -25,3 +25,13 @@ npm install
 ```bash
 npm run dev
 ```
+
+## Запуск unit-тестов
+```bash
+npm run test
+```
+
+## Запуск e2e-тестов
+```bash
+npm run e2e
+```

@@ -23,13 +23,19 @@ const statusMessage = ref("");
 const simpleSchema = {
   login(value) {
     if (!value) {
-      return "Необходимо заполнить login";
+      return "Необходимо заполнить логин";
+    }
+    if (value !== 'admin') {
+      return "Неверный логин";
     }
     return true;
   },
   password(value) {
     if (!value) {
-      return "Необходимо заполнить password";
+      return "Необходимо заполнить пароль";
+    }
+    if (value !== '1234') {
+      return "Неверный пароль";
     }
     return true;
   },
@@ -85,8 +91,9 @@ const onSubmit = async (values) => {
             <Form
               class="needs-validation"
               @submit="onSubmit"
-              :validation-schema="simpleSchema"
+              :validation-schema="simpleSchema"  data-testid="form"
             >
+              *логин - admin, пароль - 1234
               <div class="form-floating my-2">
                 <Field
                   type="text"
@@ -94,6 +101,7 @@ const onSubmit = async (values) => {
                   id="login"
                   name="login"
                   placeholder="логин"
+                  data-testid="login"
                 />
                 <label for="login">Логин</label>
                 <ErrorMessage class="error-message" name="login" />
@@ -105,12 +113,13 @@ const onSubmit = async (values) => {
                   id="password"
                   name="password"
                   placeholder="пароль"
+                  data-testid="password"
                 />
                 <label for="password">Пароль</label>
                 <ErrorMessage class="error-message" name="password" />
               </div>
 
-              <button class="w-100 btn btn-lg btn-primary my-4" type="submit">
+              <button class="w-100 btn btn-lg btn-primary my-4" type="submit" data-testid="submit">
                 Войти
               </button>
 
